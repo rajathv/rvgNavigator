@@ -290,10 +290,10 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             else if (arr[1].equals("right"))BTmsg = BTmsg + "right,";  // Right turn detected
             else                            BTmsg = BTmsg + "err,";    //Unknown case
             BTmsg = BTmsg + distToNextManeuver + ";\n";
-            //Toast.makeText(this, BTmsg, Toast.LENGTH_SHORT).show();  // for testing purpose, display sent message
-            if (bluetoothManagement.isBTSet) bluetoothManagement.sendMsg(BTmsg);
+            Toast.makeText(this, BTmsg, Toast.LENGTH_SHORT).show();  // for testing purpose, display sent message
+          /*  if (bluetoothManagement.isBTSet) bluetoothManagement.sendMsg(BTmsg);
             else ;
-            BTmsg = " ";
+            BTmsg = " ";*/
         }
     }
 
