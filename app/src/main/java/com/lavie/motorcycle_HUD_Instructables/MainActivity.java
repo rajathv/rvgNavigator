@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private Point ORIGIN = Point.fromLngLat(-1.5534, 47.2173);       // Nantes, France
     private Point DESTINATION = Point.fromLngLat(-2.2488, 48.8534);  // Paris, France
 
-    static BluetoothManagement bluetoothManagement = new BluetoothManagement();
+    //static BluetoothManagement bluetoothManagement = new BluetoothManagement();
 
     public static Context context;
     private static int OnProgressChange_thirdCall = 0;
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         mapView = (MapView) findViewById(R.id.mapView);
         startButton = findViewById(R.id.buttonStart);
         startButton.setEnabled(false);  // Cannot launch navigation before route has been fetched
-        connectBTButton = findViewById(R.id.buttonConnectBT);
+       /* connectBTButton = findViewById(R.id.buttonConnectBT);
         connectBTButton.setEnabled(false); // Cannot attempt to connect before checking if bluetooth is on
         closeBTButton = findViewById(R.id.buttonCloseBT);
         closeBTButton.setEnabled(false);   // Cannot attempt to close bluetooth connection if it hasn't been established yet
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         });
         closeBTButton.setOnClickListener(v -> {
             bluetoothManagement.closeBT();   //Close all Bluetooth devices
-        });
+        });*/
 
         startButton.setOnClickListener(v -> {
             setTheme(R.style.Theme_AppCompat_Light_NoActionBar);
@@ -324,7 +324,7 @@ catch (Throwable t){
             else if (arr[1].equals("right"))BTmsg = BTmsg + "right,";  // Right turn detected
             else                            BTmsg = BTmsg + "err,";    //Unknown case
             //BTmsg = BTmsg + distToNextManeuver + ";\n";
-            Toast.makeText(this, BTmsg, Toast.LENGTH_SHORT).show();
+
             String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
             IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -334,6 +334,8 @@ catch (Throwable t){
             float batteryPct = level * 100 / (float)scale;
             String batteryPercentage =String.valueOf(batteryPct);
             String distance = String.valueOf(distToNextManeuver);
+            String fullString = "Distance "+distance+" Direction "+BTmsg+" Time "+currentTime+" Battery Percentage "+batteryPercentage;
+            Toast.makeText(this, fullString, Toast.LENGTH_SHORT).show();
             postData(BTmsg,distance,currentTime,batteryPercentage);
 
 
@@ -382,7 +384,7 @@ catch (Throwable t){
         super.onStop();
         mapView.onStop();
         navigationView.onStop();
-        bluetoothManagement.closeBT();
+       // bluetoothManagement.closeBT();
     }
 
     @Override
@@ -397,7 +399,7 @@ catch (Throwable t){
         super.onDestroy();
         mapView.onDestroy();
         navigationView.onDestroy();
-        bluetoothManagement.closeBT();
+        //bluetoothManagement.closeBT();
     }
 
     @Override
