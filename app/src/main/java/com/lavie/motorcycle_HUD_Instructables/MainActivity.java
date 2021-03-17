@@ -1,7 +1,10 @@
 package com.lavie.motorcycle_HUD_Instructables;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -37,9 +40,18 @@ import com.mapbox.services.android.navigation.v5.offroute.OffRouteListener;
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener;
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
 
+import java.io.OutputStream;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,6 +125,28 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         });
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+    }
+    public void postData(String direction, String distance, String time, String temp) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody formBody = new FormBody.Builder()
+                .add("direction", direction)
+                .add("distance", distance)
+                .add("time",time)
+                .add("temperature", temp)
+                .build();
+
+try {
+    Request request = new Request.Builder()
+            .url("192.168.4.1") // The URL to send the data to
+            .post(formBody)
+            .build();
+}
+catch (Throwable t){
+    Toast.makeText(getApplicationContext(), "Device not online. IP not rechable", Toast.LENGTH_LONG).show();
+}
+    }
+
+    private void writeStream(OutputStream out) {
     }
 
     @Override
@@ -289,8 +323,23 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
             if (arr[1].equals("left"))      BTmsg = BTmsg + "left,";   // Left turn detected
             else if (arr[1].equals("right"))BTmsg = BTmsg + "right,";  // Right turn detected
             else                            BTmsg = BTmsg + "err,";    //Unknown case
-            BTmsg = BTmsg + distToNextManeuver + ";\n";
-            Toast.makeText(this, BTmsg, Toast.LENGTH_SHORT).show();  // for testing purpose, display sent message
+            //BTmsg = BTmsg + distToNextManeuver + ";\n";
+            Toast.makeText(this, BTmsg, Toast.LENGTH_SHORT).show();
+            String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+            IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent batteryStatus = context.registerReceiver(null, ifilter);
+            int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+            float batteryPct = level * 100 / (float)scale;
+            String batteryPercentage =String.valueOf(batteryPct);
+            String distance = String.valueOf(distToNextManeuver);
+            postData(BTmsg,distance,currentTime,batteryPercentage);
+
+
+
+
+            // for testing purpose, display sent message
           /*  if (bluetoothManagement.isBTSet) bluetoothManagement.sendMsg(BTmsg);
             else ;
             BTmsg = " ";*/
