@@ -37,6 +37,7 @@ dependencies {
     // MapBox dependencies
     implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.6'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-localization-v9:0.12.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v9:0.12.0'
 
     //  Android Bluetooth Serial dependencies
     implementation 'com.github.harry1453:android-bluetooth-serial:v1.1'
